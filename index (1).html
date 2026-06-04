@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aramo Matthewsian — Quantitative Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0b0d;
+    --bg-2:#0e1014;
+    --surface:#14171c;
+    --surface-2:#181c23;
+    --line:#262b33;
+    --line-soft:#1d222a;
+    --text:#ece9e2;
+    --muted:#8a9099;
+    --faint:#565d66;
+    --accent:#e8b84b;
+    --accent-dim:#b98f2f;
+    --green:#5fd39b;
+    --red:#e0664f;
+    --display:'Fraunces',Georgia,serif;
+    --body:'Hanken Grotesk',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:48px 48px;
+    opacity:.35;
+    mask-image:radial-gradient(ellipse 120% 80% at 50% 0%,#000 20%,transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse 120% 80% at 50% 0%,#000 20%,transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    top:-30%;left:50%;
+    width:90vw;height:60vh;
+    transform:translateX(-50%);
+    background:radial-gradient(circle,rgba(232,184,75,.10),transparent 60%);
+    filter:blur(40px);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  ::selection{background:var(--accent);color:#0a0b0d}
+
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 28px}
+
+  /* HERO */
+  header.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 60px;position:relative}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:30px}
+  .eyebrow .dot{color:var(--faint);margin:0 8px}
+  h1.name{font-family:var(--display);font-weight:500;font-size:clamp(3.2rem,9vw,6.4rem);line-height:.95;letter-spacing:-.02em;margin-bottom:28px}
+  h1.name em{font-style:italic;color:var(--accent);font-weight:400}
+  .lede{max-width:620px;font-size:clamp(1.05rem,2.2vw,1.28rem);color:#c8c5bd;line-height:1.6}
+  .lede strong{color:var(--text);font-weight:600}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:14px 26px;margin-top:42px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .hero-meta span{display:flex;align-items:center;gap:9px}
+  .hero-meta span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .hero-meta span.b::before{background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .hero-meta span.c::before{background:var(--muted);box-shadow:none}
+
+  .ticker{margin-top:64px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .ticker-track{display:inline-block;padding:13px 0;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;color:var(--faint);animation:scroll 38s linear infinite}
+  .ticker-track span{color:var(--accent-dim)}
+  .ticker-track .sep{color:var(--line);margin:0 18px}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* SECTIONS */
+  section{padding:90px 0;position:relative}
+  .sec-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:34px;display:flex;align-items:center;gap:14px}
+  .sec-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:56px}
+  .about-body p{margin-bottom:18px;color:#c8c5bd;font-size:1.08rem}
+  .about-body p:last-child{margin-bottom:0}
+  .about-body .hl{color:var(--text);font-weight:500}
+  .edu{border-left:2px solid var(--accent);padding-left:22px}
+  .edu h3{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:20px}
+  .edu .deg{margin-bottom:22px}
+  .edu .deg .t{font-family:var(--display);font-size:1.22rem;color:var(--text);line-height:1.25}
+  .edu .deg .s{font-size:.95rem;color:var(--muted);margin-top:3px}
+  .edu .deg .m{font-family:var(--mono);font-size:12px;color:var(--accent);margin-top:6px}
+
+  /* PROJECTS */
+  .project{border-top:1px solid var(--line);padding:48px 0;display:grid;grid-template-columns:64px 1fr;gap:30px;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+  .project:hover{transform:translateX(6px)}
+  .p-idx{font-family:var(--mono);font-size:13px;color:var(--faint);padding-top:8px}
+  .p-tags{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .p-tags .role{color:var(--accent);display:block;margin-top:6px;letter-spacing:.1em}
+  h2.p-title{font-family:var(--display);font-weight:500;font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.05;letter-spacing:-.015em;margin-bottom:20px}
+  .p-body{color:#bdbab2;max-width:660px;font-size:1.04rem;margin-bottom:28px}
+  .metrics{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:26px}
+  .metric{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:16px 20px;min-width:150px;flex:1}
+  .metric .v{font-family:var(--mono);font-size:1.55rem;font-weight:600;color:var(--accent);line-height:1;letter-spacing:-.02em}
+  .metric.up .v{color:var(--green)}
+  .metric .l{font-family:var(--body);font-size:.82rem;color:var(--muted);margin-top:9px;line-height:1.35}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 13px;transition:.25s}
+  .chip:hover{border-color:var(--accent-dim);color:var(--text)}
+
+  /* TOOLKIT */
+  .tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .tool-cell{background:var(--bg-2);padding:30px 26px}
+  .tool-cell h3{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+  .tool-cell ul{list-style:none}
+  .tool-cell li{padding:7px 0;color:#c2bfb7;font-size:.97rem;border-bottom:1px solid var(--line-soft)}
+  .tool-cell li:last-child{border-bottom:none}
+
+  /* CONTACT */
+  .contact{text-align:center;padding:110px 0 70px}
+  .contact .big{font-family:var(--display);font-weight:500;font-size:clamp(2rem,6vw,3.6rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:14px}
+  .contact .big em{font-style:italic;color:var(--accent)}
+  .contact .sub{color:var(--muted);font-family:var(--mono);font-size:13px;letter-spacing:.1em;margin-bottom:40px}
+  .links{display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
+  .links a{font-family:var(--mono);font-size:14px;color:var(--text);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:13px 26px;display:inline-flex;align-items:center;gap:10px;transition:.3s}
+  .links a:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+  .links a .arr{color:var(--faint);transition:.3s}
+  .links a:hover .arr{color:var(--accent);transform:translate(3px,-3px)}
+  .links a.muted{color:var(--muted)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;font-family:var(--mono);font-size:12px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* REVEAL */
+  .js .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+  .js .reveal.in{opacity:1;transform:none}
+  .js .hero .reveal{transform:translateY(34px)}
+
+  /* RESPONSIVE */
+  @media(max-width:820px){
+    .about-grid{grid-template-columns:1fr;gap:40px}
+    .tool-grid{grid-template-columns:1fr}
+    .project{grid-template-columns:1fr;gap:14px}
+    .p-idx{padding-top:0}
+  }
+  @media(max-width:540px){
+    body{font-size:16px}
+    .metric{min-width:100%}
+    section{padding:64px 0}
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow reveal">Quantitative Research <span class="dot">/</span> Derivatives <span class="dot">/</span> Systematic Trading</div>
+    <h1 class="name reveal">Aramo<br>Matthewsian<em>.</em></h1>
+    <p class="lede reveal">Master's candidate in Quantitative Finance building and stress-testing market models in Python — from <strong>stochastic-volatility option pricing</strong> to <strong>prediction-market asset pricing</strong> and <strong>systematic strategy research</strong>.</p>
+    <div class="hero-meta reveal">
+      <span>Available for 2026 quant roles</span>
+      <span class="b">M.Q.F. · UC San Diego (Rady)</span>
+      <span class="c">San Diego, CA</span>
+    </div>
+  </header>
+</div>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>NVDA</span> implied-vol skew <span class="sep">//</span> Euler–Maruyama <span class="sep">//</span> Owen-scrambled <span>Sobol</span> <span class="sep">//</span> Fama–MacBeth <span class="sep">//</span> <span>Kalshi</span> F_KAL factor <span class="sep">//</span> Polymarket implied forecasts <span class="sep">//</span> Newey–West <span>HAC</span> <span class="sep">//</span> Diebold–Mariano <span class="sep">//</span> Benjamini–Hochberg <span class="sep">//</span> <span>XGBoost</span> <span class="sep">//</span> walk-forward backtesting <span class="sep">//</span>
+    <span>NVDA</span> implied-vol skew <span class="sep">//</span> Euler–Maruyama <span class="sep">//</span> Owen-scrambled <span>Sobol</span> <span class="sep">//</span> Fama–MacBeth <span class="sep">//</span> <span>Kalshi</span> F_KAL factor <span class="sep">//</span> Polymarket implied forecasts <span class="sep">//</span> Newey–West <span>HAC</span> <span class="sep">//</span> Diebold–Mariano <span class="sep">//</span> Benjamini–Hochberg <span class="sep">//</span> <span>XGBoost</span> <span class="sep">//</span> walk-forward backtesting <span class="sep">//</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="about">
+    <div class="sec-label reveal">01 — About</div>
+    <div class="about-grid">
+      <div class="about-body reveal">
+        <p>I work at the intersection of <span class="hl">empirical asset pricing, derivatives, and systematic trading</span> — building models in Python and testing them against real market data from CRSP/WRDS, Bloomberg, and FRED.</p>
+        <p>I'm drawn to questions where market microstructure meets information: how prediction markets price macro risk, where the Black–Scholes world quietly breaks down, and — the part that matters most — what actually survives out-of-sample once the in-sample story looks good.</p>
+        <p>My research spans Monte Carlo and quasi-Monte Carlo pricing engines, factor construction with proper HAC inference and multiple-testing correction, and walk-forward backtesting discipline.</p>
+      </div>
+      <div class="edu reveal">
+        <h3>Education</h3>
+        <div class="deg">
+          <div class="t">M.Q.F., Quantitative Finance</div>
+          <div class="s">UC San Diego — Rady School of Management</div>
+          <div class="m">Expected Jun 2026 · 3.8 GPA</div>
+        </div>
+        <div class="deg">
+          <div class="t">B.S., Financial Analysis</div>
+          <div class="s">California State University, Northridge</div>
+          <div class="m">Cum Laude</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="sec-label reveal">02 — Selected Work</div>
+
+    <article class="project reveal">
+      <div class="p-idx">/ 01</div>
+      <div>
+        <div class="p-tags">MGTF 413 · Computational Finance · Winter 2026 · 6-person team
+          <span class="role">▸ Led theory, Euler–Maruyama discretization & Monte Carlo engine</span>
+        </div>
+        <h2 class="p-title">3/2 Stochastic Volatility Model &amp; Option Pricing</h2>
+        <p class="p-body">Extracted the implied-volatility skew from NVDA April ITM calls via Newton's method, then showed that transplanting a single-maturity IV curve onto a later expiry produces systematic Black–Scholes mispricing. Built a 3/2 stochastic-volatility pricer — variance driven by a superlinear <span style="font-family:var(--mono);color:var(--text)">γY<sup>3/2</sup></span> diffusion, simulated with a correlated Euler–Maruyama scheme (100k paths × 62 steps, variance calibrated to <span style="font-family:var(--mono);color:var(--text)">Y<sub>0</sub> = σ²<sub>ATM</sub> ≈ 0.156</span>) — and benchmarked it against Black–Scholes across 162 June ITM contracts. Mapped the model's parameter sensitivity, isolating the regime where stock–vol correlation ρ actually bites: negligible at realistic vol-of-vol, but at high γ negative ρ steepens the pricing curve while positive ρ flattens it. Closed by swapping pseudo-random sampling for Owen-scrambled Sobol sequences to collapse Monte Carlo variance at fixed compute.</p>
+        <div class="metrics">
+          <div class="metric up"><div class="v">−65%</div><div class="l">RMSE vs Black–Scholes, all strikes (5.98 → 2.09)</div></div>
+          <div class="metric up"><div class="v">−83%</div><div class="l">RMSE within interpolation range (6.54 → 1.14)</div></div>
+          <div class="metric"><div class="v">~70×</div><div class="l">lower std. error from QMC at equal compute</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">Euler–Maruyama</span><span class="chip">Monte Carlo</span><span class="chip">Newton's Method</span><span class="chip">Owen-Scrambled Sobol</span><span class="chip">NumPy / SciPy</span><span class="chip">yfinance</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project reveal">
+      <div class="p-idx">/ 02</div>
+      <div>
+        <div class="p-tags">Independent Research · Sole Author · 2026
+          <span class="role">▸ Full pipeline, factor construction & asset-pricing test battery</span>
+        </div>
+        <h2 class="p-title">Prediction Market Factor Model — Kalshi</h2>
+        <p class="p-body">Asked whether information embedded in Kalshi macro prediction-market prices is a <em>priced</em> source of systematic equity risk. Built a monthly long-short factor (F_KAL) from the Kalshi Becker Dataset and embedded it in an augmented three-factor model alongside the Fama–French market factor and a Google Trends attention factor. Ran the full gauntlet — Fama–MacBeth cross-sectional regressions, a GRS joint-alpha test (F = 0.20, fails to reject), Newey–West HAC inference, expanding-window out-of-sample evaluation (marginal OOS R² vs CAPM = −0.20), and Benjamini–Hochberg correction — and showed a market-neutral F_KAL-sorted long/short earns a −0.88 Sharpe. The verdict was deliberately honest: a small, marginally significant cross-sectional premium that does <em>not</em> convert into robust out-of-sample predictability or a tradeable edge.</p>
+        <div class="metrics">
+          <div class="metric"><div class="v">5,087</div><div class="l">macro markets · 2.3M trades (2021–25)</div></div>
+          <div class="metric"><div class="v">−2.10</div><div class="l">Fama–MacBeth t-stat (γ = −0.59)</div></div>
+          <div class="metric"><div class="v">2 / 37</div><div class="l">stocks significant after BH correction</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">Fama–MacBeth</span><span class="chip">GRS Test</span><span class="chip">Newey–West HAC</span><span class="chip">Benjamini–Hochberg</span><span class="chip">statsmodels</span><span class="chip">Kalshi API</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project reveal">
+      <div class="p-idx">/ 03</div>
+      <div>
+        <div class="p-tags">MGTF 405 · Business Forecasting · 4-person team
+          <span class="role">▸ Polymarket implied-forecast construction & OOS evaluation</span>
+        </div>
+        <h2 class="p-title">Prediction Markets: Priced Efficiently?</h2>
+        <p class="p-body">Built probability-weighted implied forecasts for CPI, GDP and unemployment directly from Polymarket contract prices, then ran a forecasting horse race against the Bloomberg analyst consensus, AR(1) / random-walk baselines, and a suite of ML learners (Elastic Net, PCR, Random Forest, Gradient Boosting, MLPs). Enforced strict look-ahead controls and judged accuracy with Diebold–Mariano and Mincer–Zarnowitz tests. Prediction markets reacted fastest to new information and won at short horizons on the hard-to-herd releases, while consensus economists kept the edge on routine high-frequency prints.</p>
+        <div class="metrics">
+          <div class="metric up"><div class="v">33.8%</div><div class="l">Polymarket 1-week-ahead MAPE</div></div>
+          <div class="metric"><div class="v">52.6%</div><div class="l">Bloomberg consensus MAPE</div></div>
+          <div class="metric"><div class="v">69.0%</div><div class="l">best ML model MAPE</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">Diebold–Mariano</span><span class="chip">Mincer–Zarnowitz</span><span class="chip">Gradient Boosting</span><span class="chip">Elastic Net</span><span class="chip">FRED</span><span class="chip">Polymarket CLOB API</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project reveal">
+      <div class="p-idx">/ 04</div>
+      <div>
+        <div class="p-tags">MGTF 415 · Empirical Asset Pricing · 5-person team
+          <span class="role">▸ Data-ingestion pipeline & factor construction</span>
+        </div>
+        <h2 class="p-title">Information-Based CAPM — Polymarket × Attention</h2>
+        <p class="p-body">Augmented the CAPM with two forward-looking, information-based factors: a Polymarket economic-expectation factor built from 140+ macro event contracts, and a Google Trends search-volume attention factor following Da, Engelberg &amp; Gao (2011). Engineered the end-to-end pipeline — Polymarket Gamma API, pytrends, CRSP and the Ken French library — with stationarity testing and look-ahead lagging, then compared nested factor specifications against an XGBoost benchmark with feature-importance analysis.</p>
+        <div class="metrics">
+          <div class="metric up"><div class="v">16.5 → 23.2%</div><div class="l">expected return: CAPM → full 3-factor model</div></div>
+          <div class="metric"><div class="v">140+</div><div class="l">macro event contracts ingested</div></div>
+          <div class="metric"><div class="v">40/31/29</div><div class="l">XGBoost importance: MKT / SVI / Trend</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">Polymarket API</span><span class="chip">pytrends</span><span class="chip">CRSP / WRDS</span><span class="chip">XGBoost</span><span class="chip">Fama–French</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="project reveal">
+      <div class="p-idx">/ 05</div>
+      <div>
+        <div class="p-tags">CQA Investment Challenge · Quant Trading Competition
+          <span class="role">▸ Strategy design & portfolio risk management</span>
+        </div>
+        <h2 class="p-title">CQA Long/Short Equity Challenge</h2>
+        <p class="p-body">Designed and ran long/short equity strategies for the CQA Investment Challenge, focused on systematic alpha generation, factor-exposure control, and portfolio-level risk management under competition constraints.</p>
+        <div class="chips">
+          <span class="chip">Long/Short Equity</span><span class="chip">Alpha Research</span><span class="chip">Risk Management</span><span class="chip">Factor Exposure</span>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <section id="toolkit">
+    <div class="sec-label reveal">03 — Toolkit</div>
+    <div class="tool-grid reveal">
+      <div class="tool-cell">
+        <h3>Languages &amp; Libraries</h3>
+        <ul><li>Python</li><li>NumPy · pandas</li><li>SciPy · statsmodels</li><li>scikit-learn</li><li>XGBoost</li></ul>
+      </div>
+      <div class="tool-cell">
+        <h3>Data &amp; Platforms</h3>
+        <ul><li>CRSP / WRDS</li><li>Bloomberg</li><li>FRED · Ken French Library</li><li>Polymarket &amp; Kalshi APIs</li><li>Google Trends</li></ul>
+      </div>
+      <div class="tool-cell">
+        <h3>Methods</h3>
+        <ul><li>Empirical Asset Pricing</li><li>Derivatives Pricing</li><li>Monte Carlo &amp; QMC</li><li>Time-Series Forecasting</li><li>Walk-Forward Backtesting</li></ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="wrap">
+  <section class="contact" id="contact">
+    <div class="sec-label reveal" style="justify-content:center">04 — Contact</div>
+    <div class="big reveal">Let's talk markets &amp; <em>models.</em></div>
+    <div class="sub reveal">Open to quant research, trading &amp; equity-derivatives roles</div>
+    <div class="links reveal">
+      <a href="https://github.com/Fenance19" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a>
+      <a class="muted" href="#" title="Add your LinkedIn URL here">LinkedIn <span class="arr">↗</span></a>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Aramo Matthewsian</span>
+    <span>Built with Python, conviction &amp; out-of-sample skepticism.</span>
+  </footer>
+</div>
+
+<script>
+  var els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.hero .reveal').forEach(function(el, i){
+      el.style.transitionDelay = (i * 0.09) + 's';
+    });
+    els.forEach(function(el){ io.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('in'); });
+  }
+</script>
+
+</body>
+</html>
